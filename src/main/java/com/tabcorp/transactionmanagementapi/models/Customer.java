@@ -19,7 +19,19 @@ public class Customer {
 
     @Column(name = "last_name")
     private String lastName;
+    
+    @Column(name = "age")
+    private int age;
 
+    @Column(name = "location")
+    private String location;
+
+    
+ // Default constructor
+    public Customer() {
+    }
+    
+    
 	public Long getCustomerId() {
 		return customerId;
 	}
@@ -44,12 +56,37 @@ public class Customer {
 		this.lastName = lastName;
 	}
 
-	public Customer(Long customerId, String firstName, String lastName) {
+
+	public int getAge() {
+		return age;
+	}
+
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+
+	public String getLocation() {
+		return location;
+	}
+
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+
+	public Customer(Long customerId, String firstName, String lastName, int age, String location) {
 		super();
 		this.customerId = customerId;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.age = age;
+		this.location = location;
 	}
+
+	
 
  
 }

@@ -20,16 +20,26 @@ import org.springframework.validation.Errors;
 @Service
 public class TransactionService {
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
+    private final ProductRepository productRepository;
+    private final TransactionRepository transactionRepository;
+    private final TransactionValidator transactionValidator;
 
     @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private TransactionRepository transactionRepository;
+    public TransactionService(
+            CustomerRepository customerRepository,
+            ProductRepository productRepository,
+            TransactionRepository transactionRepository,
+            TransactionValidator transactionValidator) {
+        this.customerRepository = customerRepository;
+        this.productRepository = productRepository;
+        this.transactionRepository = transactionRepository;
+        this.transactionValidator = transactionValidator;
+    }
 
     public String addTransaction(TransactionRequest transactionRequest) {
+       
+
         // Retrieve customer and product
         Customer customer = customerRepository.findById(transactionRequest.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
@@ -37,6 +47,9 @@ public class TransactionService {
         Product product = productRepository.findById(transactionRequest.getProductCode())
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
+        // Validate the transaction request
+        transactionValidator.validate(transactionRequest,product);
+        
         // Create and save the transaction
         Transaction transaction = new Transaction();
 

@@ -24,7 +24,7 @@ public class TransactionManagementApiExceptionHandler extends ResponseEntityExce
 	}
 
 	@ExceptionHandler(value= {ProductNotFoundException.class})
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ErrorResponse errorHandlerCustom(ProductNotFoundException ex, WebRequest req){
 		ErrorResponse err = new ErrorResponse();
 		err.setMessage(ex.getMessage());
@@ -34,7 +34,7 @@ public class TransactionManagementApiExceptionHandler extends ResponseEntityExce
 	}
 	
 	@ExceptionHandler(value= {CustomerNotFoundException.class})
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ErrorResponse errorHandlerCustom(CustomerNotFoundException ex, WebRequest req){
 		ErrorResponse err = new ErrorResponse();
 		err.setMessage(ex.getMessage());
@@ -43,5 +43,13 @@ public class TransactionManagementApiExceptionHandler extends ResponseEntityExce
 		return err;
 	}
 	
-
+	@ExceptionHandler(value= {TransactionValidationException.class})
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	protected ErrorResponse errorHandlerCustom(TransactionValidationException ex, WebRequest req){
+		ErrorResponse err = new ErrorResponse();
+		err.setMessage(ex.getMessage());
+		err.setErrorCode("CUSTOM-ERROR-511");
+		err.setTime(new java.util.Date());
+		return err;
+	}
 }

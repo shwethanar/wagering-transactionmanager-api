@@ -14,6 +14,10 @@ public class Product {
 
     private String status;
 
+    // Default constructor
+    public Product() {
+    }
+    
 	public String getProductCode() {
 		return productCode;
 	}
