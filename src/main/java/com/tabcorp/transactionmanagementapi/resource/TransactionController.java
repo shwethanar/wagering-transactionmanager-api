@@ -1,4 +1,4 @@
-package com.tabcorp.transactionmangementapi.resource;
+package com.tabcorp.transactionmanagementapi.resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tabcorp.transactionmanagementapi.models.Transaction;
-import com.tabcorp.transactionmangementapi.service.TransactionService;
+import com.tabcorp.transactionmanagementapi.service.TransactionService;
 
 @RestController
 public class TransactionController {
