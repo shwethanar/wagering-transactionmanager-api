@@ -16,12 +16,18 @@ import org.apache.log4j.Logger;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Service
 public class TransactionService {
@@ -47,7 +53,7 @@ public class TransactionService {
 
         // Retrieve customer and product
         Customer customer = customerRepository.findById(transactionRequest.getCustomerId())
-                .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found for ID: "+transactionRequest.getCustomerId()));
 
         Product product = productRepository.findById(transactionRequest.getProductCode())
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
@@ -100,8 +106,13 @@ public class TransactionService {
     public BigDecimal getTotalCostByCustomer(Long customerId) {
         // Fetch the customer's transactions from the repository
         List<Transaction> customerTransactions = transactionRepository.findByCustomerId(customerId);
-        logger.info("total count of customerTransactions :"+customerTransactions.size());
-        
+        logger.info("total count of customerTransactions :" + customerTransactions.size());
+
+        // Check if the customer exists
+        if (!customerRepository.existsById(customerId)) {
+            throw new CustomerNotFoundException("Customer not found for ID: " + customerId);
+        }
+
         // Calculate the total cost by summing the costs of all transactions
         BigDecimal totalCost = BigDecimal.ZERO;
         for (Transaction transaction : customerTransactions) {
@@ -116,17 +127,69 @@ public class TransactionService {
         // Fetch the product's transactions from the repository
         List<Transaction> productTransactions = transactionRepository.findByProductCode(productCode);
 
-        logger.info("getTotalCostByProduct::ProductTransactions count :"+productTransactions.size());
+        logger.info("getTotalCostByProduct::ProductTransactions count :" + productTransactions.size());
+
+        // Check if the product exists
+        if (!productRepository.existsById(productCode)) {
+            throw new ProductNotFoundException("Product not found: " + productCode);
+        }
+
         // Calculate the total cost by summing the costs of all transactions
         BigDecimal totalCost = BigDecimal.ZERO;
         for (Transaction transaction : productTransactions) {
             BigDecimal transactionCost = transaction.getTransactionCost(productRepository);
             totalCost = totalCost.add(transactionCost);
         }
-        logger.info("getTotalCostByProduct::totalCost :"+totalCost);
+
+        logger.info("getTotalCostByProduct::totalCost :" + totalCost);
         return totalCost;
     }
 
+    public Map<Long, BigDecimal> getTotalCostForCustomers() {
+        List<Transaction> allTransactions = transactionRepository.findAll();
+        Map<Long, BigDecimal> totalCostByCustomer = new HashMap<>();
+
+        for (Transaction transaction : allTransactions) {
+            Long customerId = transaction.getCustomerId();
+            BigDecimal transactionCost = transaction.getTransactionCost(productRepository);
+            totalCostByCustomer.put(customerId, totalCostByCustomer.getOrDefault(customerId, BigDecimal.ZERO).add(transactionCost));
+        }
+
+        return totalCostByCustomer;
+    }
+
+    
+    public Map<String, BigDecimal> getTotalCostForProducts() {
+        List<Transaction> allTransactions = transactionRepository.findAll();
+        Map<String, BigDecimal> totalCostByProduct = new HashMap<>();
+
+        for (Transaction transaction : allTransactions) {
+            String productCode = transaction.getProductCode();
+            BigDecimal transactionCost = transaction.getTransactionCost(productRepository);
+            totalCostByProduct.put(productCode, totalCostByProduct.getOrDefault(productCode, BigDecimal.ZERO).add(transactionCost));
+        }
+
+        return totalCostByProduct;
+    }
+
+    public List<Transaction> getTransactionsInAustraliaForCustomer(Long customerId) {
+        List<Transaction> customerTransactions = transactionRepository.findByCustomerId(customerId);
+        List<Transaction> transactionsInAustralia = new ArrayList<>();
+
+        for (Transaction transaction : customerTransactions) {
+            if (isCustomerFromAustralia(transaction.getCustomerId())) {
+                transactionsInAustralia.add(transaction);
+            }
+        }
+
+        return transactionsInAustralia;
+    }
+
+    public Page<Transaction> getAllTransactions(Pageable pageable) {
+    
+    	    	return transactionRepository.findAll(pageable);
+    }
+    
    /* 
     public Transaction parseBinaryData(byte[] binaryData) throws Exception {
         // Create a byte buffer

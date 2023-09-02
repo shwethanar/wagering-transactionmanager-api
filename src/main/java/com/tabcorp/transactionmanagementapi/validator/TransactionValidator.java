@@ -31,12 +31,10 @@ public class TransactionValidator {
     private void validateCost(int quantity, Product product) {
         // Assuming you have access to product data to check product status and cost
     	String productCode = product.getProductCode();
-        if (product == null) {
+        if (productCode == null) {
         	logger.error("Product not found: " + productCode);
             throw new ProductNotFoundException("Product not found: " + productCode);
         }
-        
-        
         
         if (product.getStatus().equals("Inactive")) {
         	logger.error("Product is inactive: " + productCode);
