@@ -1,12 +1,17 @@
 package com.tabcorp.transactionmanagementapi.models;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import com.tabcorp.transactionmanagementapi.errorhandling.ProductNotFoundException;
+import com.tabcorp.transactionmanagementapi.repository.ProductRepository;
 @Entity
 @Data
 public class Transaction {
@@ -61,5 +66,17 @@ public class Transaction {
 		this.productCode = productCode;
 	}
     
-    
+	public BigDecimal getTransactionCost(ProductRepository productRepository) {
+        // Fetch the product price from the repository using the product code
+        Optional<Product> optionalProduct = productRepository.findById(productCode);
+        
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            BigDecimal cost = BigDecimal.valueOf(quantity).multiply(product.getCost());
+            return cost;
+        } else {
+            // Handle the case where the product is not found
+            throw new ProductNotFoundException("Product not found for code: " + productCode);
+        }
+    }
 }

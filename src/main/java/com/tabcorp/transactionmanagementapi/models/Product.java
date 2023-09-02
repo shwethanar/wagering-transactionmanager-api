@@ -1,4 +1,6 @@
 package com.tabcorp.transactionmanagementapi.models;
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,7 +12,7 @@ public class Product {
     @Column(name = "product_code")
     private String productCode;
 
-    private double cost;
+    private BigDecimal cost;
 
     private String status;
 
@@ -26,11 +28,11 @@ public class Product {
 		this.productCode = productCode;
 	}
 
-	public double getCost() {
+	public BigDecimal getCost() {
 		return cost;
 	}
 
-	public void setCost(double cost) {
+	public void setCost(BigDecimal cost) {
 		this.cost = cost;
 	}
 
@@ -42,7 +44,7 @@ public class Product {
 		this.status = status;
 	}
 
-	public Product(String productCode, double cost, String status) {
+	public Product(String productCode, BigDecimal cost, String status) {
 		super();
 		this.productCode = productCode;
 		this.cost = cost;
