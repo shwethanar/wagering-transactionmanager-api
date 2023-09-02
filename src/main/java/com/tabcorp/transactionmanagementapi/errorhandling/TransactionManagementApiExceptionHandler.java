@@ -44,7 +44,7 @@ public class TransactionManagementApiExceptionHandler extends ResponseEntityExce
 	}
 	
 	@ExceptionHandler(value= {TransactionValidationException.class})
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	protected ErrorResponse errorHandlerCustom(TransactionValidationException ex, WebRequest req){
 		ErrorResponse err = new ErrorResponse();
 		err.setMessage(ex.getMessage());
