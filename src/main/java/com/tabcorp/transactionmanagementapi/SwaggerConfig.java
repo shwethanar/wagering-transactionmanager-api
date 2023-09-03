@@ -1,6 +1,7 @@
 package com.tabcorp.transactionmanagementapi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -32,6 +33,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
+@Lazy
 public class SwaggerConfig {
     @Bean
     public GroupedOpenApi publicApi() {
@@ -49,29 +51,4 @@ public class SwaggerConfig {
             .build();
     }
 
-    /*@Bean
-    @Primary
-    public SwaggerUiConfigParameters swaggerUiConfigParameters() {
-        SwaggerUiConfigParameters parameters = new SwaggerUiConfigParameters();
-        parameters.setDefaultModelExpandDepth(1);
-        parameters.setDefaultModelRendering(SwaggerUiConfigParameters.ModelRendering.EXAMPLE);
-        parameters.setDefaultModelsExpandDepth(1);
-        parameters.setDeepLinking(true);
-        parameters.setDisplayOperationId(false);
-        parameters.setDisplayRequestDuration(false);
-        parameters.setFilter(true); // Use true to enable the filter
-        parameters.setMaxDisplayedTags(null);
-        parameters.setOperationsSorter(SwaggerUiConfigParameters.OperationsSorter.ALPHA);
-        parameters.setShowExtensions(true);
-        parameters.setTagsSorter(SwaggerUiConfigParameters.TagsSorter.ALPHA);
-        
-        // You can customize other parameters as needed
-        
-        return parameters;
-    }
-
-    @Bean
-    public OpenApiConfigProperties openApiConfigProperties() {
-        return new OpenApiConfigProperties();
-    }*/
-}
+ }

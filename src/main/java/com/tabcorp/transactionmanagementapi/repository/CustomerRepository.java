@@ -5,5 +5,7 @@ import com.tabcorp.transactionmanagementapi.models.Customer;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
+
+	 Customer save(Customer customer);
 	
 }

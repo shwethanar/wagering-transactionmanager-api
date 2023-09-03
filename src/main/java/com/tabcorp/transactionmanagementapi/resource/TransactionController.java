@@ -48,8 +48,6 @@ public class TransactionController {
         this.objectMapper = objectMapper;
     }
 
-    
-
     @Operation(summary = "Create transaction from JSON", description = "This endpoint accepts JSON-encoded transactions, parses them, and creates a new transaction.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Transaction created successfully"),
@@ -132,5 +130,30 @@ public class TransactionController {
     	Page<Transaction> allTP= transactionService.getAllTransactions(pageable);
         return allTP;
     }
+    
+    
+    // Endpoint to accept binary-encoded transactions
+    @PostMapping("/binary")
+    public ResponseEntity<Object> createTransactionFromBinary(@RequestBody byte[] binaryData) {
+        try {
+            // Create a transaction object from the binary data
+            Transaction transaction = new Transaction();
+            // Parse the binary data
+            transaction = transactionService.parseBinaryData(binaryData);
+            // Add the transaction to the database
+            //Transaction createdTransaction = transactionService.addTransaction(transaction);
+
+            Object createdTransaction = null;
+			return ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction);
+        } catch (TransactionValidationException e) {
+        	
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+  /**/
+
+
 }
 

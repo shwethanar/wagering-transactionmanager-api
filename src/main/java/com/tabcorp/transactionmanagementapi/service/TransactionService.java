@@ -190,7 +190,7 @@ public class TransactionService {
     	    	return transactionRepository.findAll(pageable);
     }
     
-   /* 
+    
     public Transaction parseBinaryData(byte[] binaryData) throws Exception {
         // Create a byte buffer
         ByteBuffer byteBuffer = ByteBuffer.wrap(binaryData);
@@ -209,7 +209,7 @@ public class TransactionService {
         Product product = productRepository.findById(productCode)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
         // Validate the transaction request
-        transactionValidator.validate(transactionId, Long.parseLong(customerId), productCode, quantity);
+       // transactionValidator.validate(transactionId, Long.parseLong(customerId), productCode, quantity);
 
         // Create a transaction object
         Transaction transaction = new Transaction();
@@ -217,7 +217,7 @@ public class TransactionService {
         transaction.setTransactionTime(LocalDateTime.now());
         transaction.setCustomerId(customer.getCustomerId());
         transaction.setProductCode(product.getProductCode());
-        transaction.setQuantity(transactionRequest.getQuantity());
+    //    transaction.setQuantity(transactionRequest.getQuantity());
 
         return transaction;
     }
@@ -234,5 +234,5 @@ public class TransactionService {
         String string = new String(bytes);
 
         return string;
-    }*/
+    }
 }

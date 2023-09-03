@@ -38,11 +38,9 @@ The Transaction Management API is a Spring Boot-based RESTful web service design
 
 #### Getting Started
 
-TBD
-
 #### Prerequisites
 
-*   Java Development Kit (JDK) 8: Ensure you have Java 11 installed on your system.
+*   Java Development Kit (JDK) 8: Ensure you have Java 8 installed on your system.
 *   Maven: You should have Maven installed to manage project dependencies.
 *   SOAPUI: SOAPUI is required for testing API endpoints.
 *   IDE: Use an Integrated Development Environment (IDE) like IntelliJ IDEA or Eclipse for development.
@@ -52,7 +50,7 @@ TBD
 
 *   Clone the project repository from GitHub URL to your local machine.
 *   Open the project in your preferred IDE.
-*   Build the project using Maven**: mvn clean install**.
+*   Build the project using Maven\*\*: mvn clean install\*\*.
 *   Start the application by running the main class TransactionManagementApiApplication or using **mvn spring-boot:run**
 
 #### Configuration
@@ -67,8 +65,6 @@ Configuration details are provided in **application.properties** and test config
 Log4j is configured to log events and information to the console. The configuration is available in log4j.properties.
 
 #### Usage
-
-TBD
 
 #### Running the Application
 
@@ -141,6 +137,12 @@ ADMIN and USER. Authentication and Authorization is defined in the SecurityConfi
   "transactionTime": "2024-09-02T21:15:00",
   "quantity": 2
 }
+```
+
+##### _Scenario 2 : Inserts into transaction table(Australia)_
+
+```plaintext
+
 
 (RECORD FOR AUSTRALIA)
 {
@@ -151,63 +153,31 @@ ADMIN and USER. Authentication and Authorization is defined in the SecurityConfi
 }
 ```
 
-##### _Scenario 2 : Inserts into transaction table_
-
-```plaintext
-
-
-{
-  "customerId": 10002,
-  "productCode": "PRODUCT_005",
-  "transactionTime": "2024-09-02T21:15:00",
-  "quantity": 2
-}
-
-{
-  "customerId": 10004,
-  "productCode": "PRODUCT_001",
-  "transactionTime": "2024-09-02T21:15:00",
-  "quantity": 2
-}
-{
-  "customerId": 10005,
-  "productCode": "PRODUCT_001",
-  "transactionTime": "2024-09-02T21:15:00",
-  "quantity": 2
-}
-{
-  "customerId": 10002,
-  "productCode": "PRODUCT_003",
-  "transactionTime": "2024-09-02T21:15:00",
-  "quantity": 2
-}
-```
-
-##### _Scenario 2 : Get the count of transactions sold to customers from Australia._
+##### _Scenario 3 : Get the count of transactions sold to customers from Australia._
 
 ```plaintext
 GET http://localhost:8084/transactions/report/transactions-to-australia-count
 ```
 
-##### _Scenario 2 : Get the total cost of transactions for a specific product._
+##### _Scenario 4 : Get the total cost of transactions for a specific product._
 
 ```plaintext
 GET http://localhost:8084/transactions/report/total-cost-by-product/PRODUCT_003
 ```
 
-##### _Scenario 2 : Get the total cost of transactions for a specific customer._
+##### _Scenario 5 : Get the total cost of transactions for a specific customer._
 
 ```plaintext
 GET http://localhost:8084/transactions/report/total-cost-by-customer/10001
 ```
 
-##### _Scenario 2 : Get the list of total cost of transactions for each product._
+##### _Scenario 6 : Get the list of total cost of transactions for each product._
 
 ```plaintext
 GET http://localhost:8084/transactions/report/total-cost-per-product
 ```
 
-##### _Scenario 2 :Get the list of total cost of transactions for each customer._
+##### _Scenario 7 :Get the list of total cost of transactions for each customer._
 
 ```plaintext
 GET http://localhost:8084/transactions/report/total-cost-per-customer
@@ -215,7 +185,7 @@ GET http://localhost:8084/transactions/report/total-cost-per-customer
 
 #### **INVALID Requests**
 
-##### _Scenario 2 : PreDated record_
+##### _Scenario 8 : PreDated record_
 
 ```plaintext
 {
@@ -226,7 +196,7 @@ GET http://localhost:8084/transactions/report/total-cost-per-customer
 }
 ```
 
-##### _Scenario 2 : transaction cost greater than 5000_
+##### _Scenario 9 : transaction cost greater than 5000_
 
 ```plaintext
 {
@@ -237,7 +207,7 @@ GET http://localhost:8084/transactions/report/total-cost-per-customer
 }
 ```
 
-##### _Scenario 2 : Inactive product_
+##### _Scenario 10 : Inactive product_
 
 ```plaintext
 {
@@ -248,7 +218,7 @@ GET http://localhost:8084/transactions/report/total-cost-per-customer
 }
 ```
 
-##### _Scenario 2 : INVALID Product_
+##### _Scenario 11 : INVALID Product_
 
 ```plaintext
 {
@@ -259,7 +229,7 @@ GET http://localhost:8084/transactions/report/total-cost-per-customer
 }
 ```
 
-##### _Scenario 2 : INVALID  Customer_
+##### _Scenario 12 : INVALID  Customer_
 
 ```plaintext
 {
@@ -270,11 +240,36 @@ GET http://localhost:8084/transactions/report/total-cost-per-customer
 }
 ```
 
-##### _Scenario 2 : INVALID  endpoint_
+##### _Scenario 13 : INVALID  endpoint_
 
 ```plaintext
 GET http://localhost:8084/transactions/report/total-cost-per-customer
 ```
+
+---
+
+## Enhancements:
+
+Here are enhancements to be done for production-ready code .
+
+1.  **Caching**:
+    *   Use an in-memory caching solution like Redis or Memcached to store frequently accessed data. This reduces the need to fetch data from the database for every request.
+2.  **Asynchronous Processing**:
+    *   Implement asynchronous processing for non-blocking tasks. For example, you can use Spring's **@Async** annotation to offload time-consuming operations to separate threads.
+3.  **Load Balancing**:
+    *   Set up load balancing to distribute incoming requests across multiple application server instances to improve throughput and fault tolerance.
+4.  **Database Optimization/Selection**:
+    *   Relational databases like PostgreSQL or MySQL, or NoSQL databases like MongoDB can be considered based on your requirements.
+5.  **Message Queues**:
+    *   Implement a message queuing system like RabbitMQ .
+6.  **Security Optimizations**:
+    *   Apart from basic Auth authentication and authorization, use of OAuth etc.
+7.  **Monitoring and Profiling**:
+    *   Implement monitoring tools like Splunk and AppDynamics.
+8.  **Auto-Scaling**:
+    *   Implement auto-scaling based on metrics like CPU utilization or request rate. Eg: AWS Auto Scaling/ use of Cloudwatch.
+9.  **Others**:
+    *   Horizontal scaling , Connection pool tuning, heap size optimization, DB query optimization, horizontal scaling, use of distributed systems
 
 ---
 
