@@ -10,7 +10,10 @@ import com.tabcorp.transactionmanagementapi.errorhandling.TransactionValidationE
 import com.tabcorp.transactionmanagementapi.models.Transaction;
 import com.tabcorp.transactionmanagementapi.service.TransactionService;
 import com.tabcorp.transactionmanagementapi.validator.TransactionValidator;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.apache.commons.codec.BinaryDecoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,25 +48,30 @@ public class TransactionController {
         this.objectMapper = objectMapper;
     }
 
-    // Endpoint to accept JSON-encoded transactions
+    
+
+    @Operation(summary = "Create transaction from JSON", description = "This endpoint accepts JSON-encoded transactions, parses them, and creates a new transaction.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Transaction created successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping("/json")
     public ResponseEntity<Transaction> createTransactionFromJson(@RequestBody String jsonRequest) throws JsonProcessingException {
-    	logger.info("Received JSON request: " + jsonRequest); // Add this logging statement
+    logger.info("Received JSON request: " + jsonRequest);
 
-    	try {	
-    	// Attempt to parse the JSON request
-        TransactionRequest request = objectMapper.readValue(jsonRequest, TransactionRequest.class);
-        
-    	
-            Transaction createdTransaction = transactionService.addTransaction(request);
-			return ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction);
-    		}catch (JsonProcessingException e) {
-    			logger.error("JSON parsing error: " + e.getMessage()); // Add this error logging statement
-    	        
-	            // Handle the JSON parsing exception here
-	            throw new JsonDeserializationException("Invalid JSON request: " + e.getMessage());
-	        }
-	   
+    try {	
+                // Attempt to parse the JSON request
+                TransactionRequest request = objectMapper.readValue(jsonRequest, TransactionRequest.class);
+
+                Transaction createdTransaction = transactionService.addTransaction(request);
+                return ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction);
+            } catch (JsonProcessingException e) {
+                logger.error("JSON parsing error: " + e.getMessage()); 
+
+                // Handle the JSON parsing exception here
+                throw new JsonDeserializationException("Invalid JSON request: " + e.getMessage());
+            }
     }
     
     @GetMapping("/")
@@ -105,12 +113,19 @@ public class TransactionController {
         return ResponseEntity.ok(totalCostByProduct);
     }
 
+    @Operation(summary = "Get transactions in Australia for a customer", description = "This endpoint retrieves transactions that occurred in Australia for a specific customer.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Transactions retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Customer not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/report/transactions-in-australia/{customerId}")
-    public ResponseEntity<List<Transaction>> getTransactionsInAustraliaForCustomer(@PathVariable Long customerId) {
+    public ResponseEntity<List<Transaction>> getTransactionsInAustraliaForCustomer(
+            @Parameter(description = "Customer ID", required = true) @PathVariable Long customerId) {
+        
         List<Transaction> transactionsInAustralia = transactionService.getTransactionsInAustraliaForCustomer(customerId);
         return ResponseEntity.ok(transactionsInAustralia);
     }
-
     
     @GetMapping("/allTtransactions")
     public Page<Transaction> getAllTransactions(Pageable pageable) {
